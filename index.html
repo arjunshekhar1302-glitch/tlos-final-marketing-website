@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TLOS — The Market Simulation Evaluation Platform</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- html2pdf.js for Client-Side PDF Generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+  <div id="app-container">
+    
+    <!-- Top Header Banner -->
+    <header class="app-header">
+      <div class="brand-section">
+        <div class="brand-logo-text">
+          <div class="brand-title">TLOS</div>
+          <div class="brand-subtitle">The Market Simulation</div>
+        </div>
+      </div>
+
+      <div class="header-status-strip">
+        <span id="badge-sim-status" class="status-badge live">● Phase: Live Simulation</span>
+        <span id="badge-team-count" class="status-badge info">10 Teams Registered</span>
+        <span id="badge-lock-status" class="status-badge">Leaderboard: Unfinalized</span>
+      </div>
+
+      <div class="header-actions">
+        <button id="btn-projector-mode" class="btn btn-cyan btn-sm" title="Launch Fullscreen Projector / Display View">
+          📺 Projector Mode
+        </button>
+        <button id="btn-load-demo" class="btn btn-outline btn-sm" title="Load sample hackathon simulation dataset">
+          ⚡ Load Demo Data
+        </button>
+        <button id="btn-run-tests" class="btn btn-outline btn-sm" title="Verify math formulas against mandatory rules">
+          🧪 Run Engine Tests
+        </button>
+      </div>
+    </header>
+
+    <!-- Subnav Tabs (13 Navigation Sections) -->
+    <nav class="app-navbar" id="app-navbar">
+      <button class="nav-tab-btn active" data-view="overview">1. Overview</button>
+      <button class="nav-tab-btn" data-view="teams">2. Teams <span class="badge-pill" id="nav-count-teams">10</span></button>
+      <button class="nav-tab-btn" data-view="companies">3. Companies <span class="badge-pill" id="nav-count-companies">6</span></button>
+      <button class="nav-tab-btn" data-view="events">4. Events <span class="badge-pill">6/6</span></button>
+      <button class="nav-tab-btn" data-view="sim-control">5. Sim Control</button>
+      <button class="nav-tab-btn" data-view="leaderboard">6. Leaderboard</button>
+      <button class="nav-tab-btn" data-view="score-audit">7. Score Audit</button>
+      <button class="nav-tab-btn" data-view="top-5">8. Top 5</button>
+      <button class="nav-tab-btn" data-view="stage-round">9. Stage Round</button>
+      <button class="nav-tab-btn" data-view="judge-scoring">10. Judge Scoring</button>
+      <button class="nav-tab-btn" data-view="final-results">11. Final Results</button>
+      <button class="nav-tab-btn" data-view="reports">12. Reports</button>
+      <button class="nav-tab-btn" data-view="backup">13. Data Backup</button>
+    </nav>
+
+    <!-- Main Content Views -->
+    <main class="main-content">
+
+      <!-- ================= 1. OVERVIEW VIEW ================= -->
+      <section id="view-overview" class="view-panel active">
+        <div class="view-header">
+          <div>
+            <h1 class="view-header-title">Simulation Command Center</h1>
+            <p class="view-header-desc">Central oversight for TLOS collegiate trading evaluation and tournament progression.</p>
+          </div>
+          <div>
+            <button id="btn-quick-finalize" class="btn btn-warning btn-sm">Finalize Simulation Results</button>
+          </div>
+        </div>
+
+        <!-- Metric Stat Cards -->
+        <div class="stat-grid">
+          <div class="stat-box">
+            <span class="stat-label">Registered Teams</span>
+            <span class="stat-val val-cyan" id="stat-total-teams">10</span>
+            <span class="stat-sub">Phase 1 Portfolios Logged</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Listed Companies</span>
+            <span class="stat-val" id="stat-total-companies">6</span>
+            <span class="stat-sub">Across 5 Sectors</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Simulation Events</span>
+            <span class="stat-val" id="stat-events-progress">6 / 6</span>
+            <span class="stat-sub">3 Bad Events Configured</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Total Market Net Worth</span>
+            <span class="stat-val val-gold" id="stat-market-networth">$0</span>
+            <span class="stat-sub">Aggregated Team Portfolios</span>
+          </div>
+        </div>
+
+        <!-- Official Scoring Rules Summary -->
+        <div class="card">
+          <div class="card-title">
+            <span>Mandatory Evaluation Rules Reference</span>
+            <span class="badge badge-normal">Official Spec 103 pts Max</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+            <div style="background: var(--bg-surface); padding: 14px; border-radius: var(--radius-sm); border-left: 3px solid var(--accent-cyan);">
+              <div style="font-weight: 700; color: var(--accent-cyan); margin-bottom: 4px;">Metric 1: Financial Return (50 pts)</div>
+              <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">
+                Final Net Worth = Cash + &sum;(share qty &times; frozen final price).
+              </p>
+              <div class="font-mono" style="font-size: 11px; color: var(--text-muted); background: var(--bg-card); padding: 6px; border-radius: 4px;">
+                50 &times; (N - Rank) / (N - 1)<br>
+                Rank 1 = 50 pts, Last = 0 pts. Ties get average rank.
+              </div>
+            </div>
+
+            <div style="background: var(--bg-surface); padding: 14px; border-radius: var(--radius-sm); border-left: 3px solid var(--accent-blue);">
+              <div style="font-weight: 700; color: #60a5fa; margin-bottom: 4px;">Metric 2: Decision Quality (30 pts)</div>
+              <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">
+                6 events &times; 5 pts each. Evaluated using team's holdings before that event.
+              </p>
+              <div class="font-mono" style="font-size: 11px; color: var(--text-muted); background: var(--bg-card); padding: 6px; border-radius: 4px;">
+                5 &times; (Chosen - Worst) / (Best - Worst)<br>
+                2.5 pts if 0 affected shares owned or Best == Worst.
+              </div>
+            </div>
+
+            <div style="background: var(--bg-surface); padding: 14px; border-radius: var(--radius-sm); border-left: 3px solid var(--market-green);">
+              <div style="font-weight: 700; color: var(--market-green); margin-bottom: 4px;">Metric 3: Risk Management (20 pts)</div>
+              <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">
+                10 Diversification + 10 Downside Control.
+              </p>
+              <div class="font-mono" style="font-size: 11px; color: var(--text-muted); background: var(--bg-card); padding: 6px; border-radius: 4px;">
+                Div: 3 cos=4, 4 cos=6, 5 cos=8, 6 cos=10 pts.<br>
+                Downside: 10 &times; (1 - TeamLoss / MaxLoss) across 3 Bad Events.
+              </div>
+            </div>
+
+            <div style="background: var(--bg-surface); padding: 14px; border-radius: var(--radius-sm); border-left: 3px solid var(--accent-gold);">
+              <div style="font-weight: 700; color: var(--accent-gold); margin-bottom: 4px;">Judge Bonus (0–3 pts, Top 5 Only)</div>
+              <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">
+                Awarded only to Top 5 teams by Automatic Score.
+              </p>
+              <div class="font-mono" style="font-size: 11px; color: var(--text-muted); background: var(--bg-card); padding: 6px; border-radius: 4px;">
+                Clarity (0/1) + Justification (0/1) + Q&A (0/1).<br>
+                Multi-judge avg rounded to nearest whole integer.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Workflow Stepper -->
+        <div class="card">
+          <div class="card-title">Event Operations Progression</div>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn btn-secondary btn-sm" onclick="app.navigateTo('teams')">Step 1: Setup Teams</button>
+            <button class="btn btn-secondary btn-sm" onclick="app.navigateTo('companies')">Step 2: Setup Companies</button>
+            <button class="btn btn-secondary btn-sm" onclick="app.navigateTo('events')">Step 3: Review 6 Events</button>
+            <button class="btn btn-cyan btn-sm" onclick="app.navigateTo('sim-control')">Step 4: Execute Sim Control</button>
+            <button class="btn btn-secondary btn-sm" onclick="app.navigateTo('leaderboard')">Step 5: Publish Leaderboard</button>
+            <button class="btn btn-secondary btn-sm" onclick="app.navigateTo('top-5')">Step 6: Confirm Top 5</button>
+            <button class="btn btn-secondary btn-sm" onclick="app.navigateTo('stage-round')">Step 7: Conduct Stage Round</button>
+            <button class="btn btn-secondary btn-sm" onclick="app.navigateTo('judge-scoring')">Step 8: Input Judge Scores</button>
+            <button class="btn btn-warning btn-sm" onclick="app.navigateTo('final-results')">Step 9: Announce Final Results</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 2. TEAMS VIEW ================= -->
+      <section id="view-teams" class="view-panel">
+        <div class="view-header">
+          <div>
+            <h1 class="view-header-title">Teams Management</h1>
+            <p class="view-header-desc">Manage hackathon participants, Phase 1 starting cash, and stock allocations.</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button id="btn-add-team" class="btn btn-cyan btn-sm">+ Add New Team</button>
+            <button id="btn-import-csv" class="btn btn-secondary btn-sm">📥 Import CSV</button>
+            <button id="btn-export-teams-csv" class="btn btn-outline btn-sm">📤 Export CSV</button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table" id="table-teams">
+            <thead>
+              <tr>
+                <th>Team ID</th>
+                <th>Team Name</th>
+                <th class="text-right">Starting Cash</th>
+                <th class="text-right">Current Cash</th>
+                <th>Phase 1 Holdings (Quantities)</th>
+                <th class="text-center">Distinct Cos</th>
+                <th class="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-teams">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================= 3. COMPANIES VIEW ================= -->
+      <section id="view-companies" class="view-panel">
+        <div class="view-header">
+          <div>
+            <h1 class="view-header-title">Companies & Market Board</h1>
+            <p class="view-header-desc">Configure listed tickers, starting prices, current prices, and frozen final evaluation prices.</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button id="btn-add-company" class="btn btn-cyan btn-sm">+ Add Company</button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table" id="table-companies">
+            <thead>
+              <tr>
+                <th>Ticker</th>
+                <th>Company Name</th>
+                <th>Sector</th>
+                <th class="text-right">Starting Price</th>
+                <th class="text-right">Current Price</th>
+                <th class="text-right">Frozen Final Price</th>
+                <th class="text-center">Total Market Shares Held</th>
+                <th class="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-companies">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================= 4. EVENTS VIEW ================= -->
+      <section id="view-events" class="view-panel">
+        <div class="view-header">
+          <div>
+            <h1 class="view-header-title">Configured Simulation Events (6 Total)</h1>
+            <p class="view-header-desc">Official events must include exactly 3 Bad Events. Configure options, costs, and price impact.</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button id="btn-reset-demo-events" class="btn btn-outline btn-sm">Reset to Demo Scenarios</button>
+          </div>
+        </div>
+
+        <div id="events-accordion-container" style="display: flex; flex-direction: column; gap: 16px;">
+          <!-- Dynamically populated 6 event cards -->
+        </div>
+      </section>
+
+      <!-- ================= 5. SIMULATION CONTROL VIEW ================= -->
+      <section id="view-sim-control" class="view-panel">
+        <div class="view-header">
+          <div>
+            <h1 class="view-header-title">Simulation Control Room</h1>
+            <p class="view-header-desc">Record team decisions event-by-event, lock completed events, and prevent duplicates.</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button id="btn-reopen-event" class="btn btn-outline btn-sm">Admin: Reopen Current Event</button>
+            <button id="btn-lock-event" class="btn btn-warning btn-sm">Lock & Complete Event</button>
+          </div>
+        </div>
+
+        <!-- Event Selector Stepper -->
+        <div class="card" style="margin-bottom: 16px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-weight: 600; color: var(--text-secondary);">Select Event to Log:</span>
+              <div id="event-stepper-buttons" style="display: flex; gap: 6px;">
+                <!-- Event 1..6 buttons -->
+              </div>
+            </div>
+            <div id="current-event-lock-status">
+              <!-- Badge -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Event Info Card -->
+        <div class="card" id="card-active-event-info" style="border-left: 4px solid var(--accent-cyan);">
+          <!-- Info -->
+        </div>
+
+        <!-- Team Decision Logger Table -->
+        <div class="card">
+          <div class="card-title">
+            <span>Team Decision Entry Matrix</span>
+            <span style="font-size: 12px; color: var(--text-muted);">Real-time net worth impact preview calculated using team pre-event holdings</span>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Team</th>
+                  <th>Pre-Event Cash</th>
+                  <th>Affected Holdings</th>
+                  <th>Chosen Option</th>
+                  <th class="text-right">Transaction Cost</th>
+                  <th class="text-right">Net Worth Delta</th>
+                  <th class="text-center">Status</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-decision-matrix">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 6. LEADERBOARD VIEW ================= -->
+      <section id="view-leaderboard" class="view-panel">
+        <div class="view-header">
+          <div>
+            <h1 class="view-header-title">Simulation Leaderboard</h1>
+            <p class="view-header-desc">Official ranked standings. Metric breakdowns are unrevealed until finalized.</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button id="btn-toggle-finalize" class="btn btn-warning btn-sm">Finalize / Unfinalize Leaderboard</button>
+            <button id="btn-export-leaderboard-csv" class="btn btn-secondary btn-sm">📤 Export CSV</button>
+          </div>
+        </div>
+
+        <div id="leaderboard-masked-alert" class="card" style="display: none; border-left: 4px solid var(--accent-gold); background: var(--bg-surface);">
+          <div style="font-weight: 700; color: var(--accent-gold); margin-bottom: 4px;">⚠️ Standings In Progress (Participant-Safe Mode)</div>
+          <div style="font-size: 13px; color: var(--text-secondary);">
+            Detailed evaluation metric points (Financial Return, Decision Quality, Risk Management) remain confidential until the organizer officially finalizes the round.
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table" id="table-leaderboard">
+            <thead>
+              <tr>
+                <th class="text-center">Rank</th>
+                <th>Team Name</th>
+                <th class="text-right">Final Net Worth</th>
+                <th class="text-right">Financial Return (50)</th>
+                <th class="text-right">Decision Quality (30)</th>
+                <th class="text-right">Risk Mgmt (20)</th>
+                <th class="text-right">Automatic Score (100)</th>
+                <th class="text-right">Judge Bonus (0-3)</th>
+                <th class="text-right">Final Score (103)</th>
+                <th>Status / Tie Notes</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-leaderboard">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================= 7. SCORE AUDIT VIEW ================= -->
+      <section id="view-score-audit" class="view-panel">
+        <div class="view-header">
+          <div>
+            <h1 class="view-header-title">Score Audit & Formula Inspector</h1>
+            <p class="view-header-desc">Admin-only mathematical verification. Deep dive into every metric and input variable.</p>
+          </div>
+          <div>
+            <select id="select-audit-team" class="form-control" style="width: 250px;">
+              <!-- Teams options -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Metric 1 Audit Card -->
+        <div class="card" id="card-audit-fin-return">
+          <div class="card-title">
+            <span style="color: var(--accent-cyan);">Metric 1 Audit: Financial Return (50 pts)</span>
+            <span id="audit-fin-points" class="val-cyan" style="font-size: 16px;"></span>
+          </div>
+          <div id="audit-fin-content"></div>
+        </div>
+
+        <!-- Metric 2 Audit Card -->
+        <div class="card" id="card-audit-dq">
+          <div class="card-title">
+            <span style="color: #60a5fa;">Metric 2 Audit: Decision Quality (30 pts — 6 Events &times; 5 pts)</span>
+            <span id="audit-dq-points" class="val-cyan" style="font-size: 16px;"></span>
+          </div>
+          <div class="table-container">
+            <table class="data-table" style="font-size: 12px;">
+              <thead>
+                <tr>
+                  <th>Event</th>
+                  <th>Pre-Holdings</th>
+                  <th>Chosen Choice</th>
+                  <th class="text-right">Chosen &Delta;NW</th>
+                  <th class="text-right">Best &Delta;NW</th>
+                  <th class="text-right">Worst &Delta;NW</th>
+                  <th>Neutral Reason / Formula</th>
+                  <th class="text-right">Score (5)</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-audit-dq"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Metric 3 Audit Card -->
+        <div class="card" id="card-audit-risk">
+          <div class="card-title">
+            <span style="color: var(--market-green);">Metric 3 Audit: Risk Management (20 pts)</span>
+            <span id="audit-risk-points" class="val-cyan" style="font-size: 16px;"></span>
+          </div>
+          <div id="audit-risk-content"></div>
+        </div>
+
+        <!-- Raw Event Ledger Inspector -->
+        <div class="card">
+          <div class="card-title">
+            <span>Raw Event Ledger Inspection</span>
+          </div>
+          <pre id="audit-raw-json" class="font-mono" style="background: var(--bg-surface); padding: 12px; border-radius: var(--radius-sm); font-size: 11px; max-height: 250px; overflow-y: auto; color: var(--text-muted);"></pre>
+        </div>
+      </section>
+
+      <!-- ================= 8. TOP 5 VIEW ================= -->
+      <section id="view-top-5" class="view-panel">
+        <div class="view-header">
+          <div>
+            <h1 class="view-header-title">Top 5 Finalists Selection</h1>
+            <p class="view-header-desc">Selected strictly by Automatic Score (not Net Worth alone) with official tie-breaking hierarchy.</p>
+          </div>
+          <div>
+            <button class="btn btn-cyan btn-sm" onclick="app.navigateTo('stage-round')">🚀 Launch Stage Round</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 20px;">
+          <div class="card-title">Tie-Breaking Rules for 5th Place</div>
+          <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
+            1. <strong>Higher Financial Return points</strong> takes priority.<br>
+            2. <strong>Higher remaining cash</strong> breaks secondary ties.<br>
+            3. If an exact tie remains, it is marked below for organizer resolution per competition handbook.
+          </p>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="text-center">Qualified Rank</th>
+                <th>Team Name</th>
+                <th class="text-right">Automatic Score</th>
+                <th class="text-right">Financial Return</th>
+                <th class="text-right">Remaining Cash</th>
+                <th class="text-center">Reflections Status</th>
+                <th class="text-center">Stage Readiness</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-top5-teams">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================= 9. STAGE ROUND VIEW ================= -->
+      <section id="view-stage-round" class="view-panel">
+        <div class="view-header">
+          <div>
+            <h1 class="view-header-title">Stage Round Presenter Interface</h1>
+            <p class="view-header-desc">Official schedule: 5m reflections completion, 2m team presentation, 1m judge Q&A.</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button id="btn-prev-stage-team" class="btn btn-secondary btn-sm">◀ Previous Team</button>
+            <button id="btn-next-stage-team" class="btn btn-secondary btn-sm">Next Team ▶</button>
+          </div>
+        </div>
+
+        <!-- Stage Team Carousel Header -->
+        <div class="card" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <span style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Currently Presenting</span>
+            <h2 id="stage-current-team-name" style="font-size: 24px; font-weight: 800; color: var(--accent-cyan);">Team Alpha</h2>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-outline btn-sm stage-mode-btn active" data-seconds="300">5 Min: Written Reflections</button>
+            <button class="btn btn-outline btn-sm stage-mode-btn" data-seconds="120">2 Min: Presentation</button>
+            <button class="btn btn-outline btn-sm stage-mode-btn" data-seconds="60">1 Min: Judge Q&A</button>
+          </div>
+        </div>
+
+        <!-- Stage Timer Display -->
+        <div class="card text-center">
+          <div id="stage-timer-mode-title" style="font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted);">
+            5 Min Written Reflections
+          </div>
+          <div class="stage-timer-display" id="stage-timer-clock">
+            05:00
+          </div>
+          <div class="timer-controls-row">
+            <button id="btn-timer-start" class="btn btn-success btn-lg">▶ Start Timer</button>
+            <button id="btn-timer-pause" class="btn btn-warning btn-lg" style="display: none;">⏸ Pause</button>
+            <button id="btn-timer-reset" class="btn btn-secondary btn-lg">↺ Reset</button>
+            <button id="btn-timer-add30" class="btn btn-outline btn-lg">+30s</button>
+          </div>
+        </div>
+
+        <!-- Presenting Team Reflections Preview -->
+        <div class="card">
+          <div class="card-title">
+            <span>Team Written Reflections (Live Stream)</span>
+            <button class="btn btn-outline btn-sm" onclick="app.navigateTo('reports')">Edit in Reports</button>
+          </div>
+          <div id="stage-reflections-container">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 10. JUDGE SCORING VIEW ================= -->
+      <section id="view-judge-scoring" class="view-panel">
+        <div class="view-header">
+          <div>
+            <h1 class="view-header-title">Stage Round Judge Scoring (Top 5 Only)</h1>
+            <p class="view-header-desc">Each judge scores 3 binary criteria (0 or 1). Multi-judge average is rounded to nearest integer (0–3 bonus).</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button id="btn-add-judge" class="btn btn-outline btn-sm">+ Add Judge</button>
+            <button id="btn-save-judge-scores" class="btn btn-cyan btn-sm">💾 Save Judge Scores</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 16px; border-left: 4px solid var(--accent-gold);">
+          <div style="font-weight: 700; color: var(--accent-gold);">Mandatory Judge Rule:</div>
+          <p style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
+            Only the top 5 teams receive judge bonuses (0–3 pts). Teams outside top 5 strictly receive 0 pts.
+            Individual judges award whole points only (no half points).
+          </p>
+        </div>
+
+        <!-- Top 5 Judge Panels -->
+        <div id="judge-scoring-panels-container">
+          <!-- Dynamically populated cards for each Top 5 team -->
+        </div>
+      </section>
+
+      <!-- ================= 11. FINAL RESULTS VIEW ================= -->
+      <section id="view-final-results" class="view-panel">
+        <div class="view-header">
+          <div>
+            <h1 class="view-header-title">Final Tournament Results & Podium</h1>
+            <p class="view-header-desc">Final rankings calculated by Automatic Score + Judge Bonus (103 pts maximum).</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-cyan btn-sm" onclick="window.print()">🖨️ Print Final Standings</button>
+          </div>
+        </div>
+
+        <!-- Podium Top 3 Cards -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px;" id="podium-cards-container">
+          <!-- Dynamically populated 1st, 2nd, 3rd places -->
+        </div>
+
+        <!-- Full Final Standings Table -->
+        <div class="card">
+          <div class="card-title">Comprehensive Tournament Classification</div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th class="text-center">Final Rank</th>
+                  <th>Team Name</th>
+                  <th class="text-right">Final Net Worth</th>
+                  <th class="text-right">Automatic Score</th>
+                  <th class="text-right">Judge Bonus</th>
+                  <th class="text-right">Final Score (Max 103)</th>
+                  <th>Tie Resolution Notes</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-final-results">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 12. REPORTS VIEW ================= -->
+      <section id="view-reports" class="view-panel">
+        <div class="view-header no-print">
+          <div>
+            <h1 class="view-header-title">Team Trade Reports & Reflections</h1>
+            <p class="view-header-desc">Printable A4 trade reports for Top 5 and all participants with 3 written reflection prompts.</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <select id="select-report-team" class="form-control" style="width: 220px;"></select>
+            <button id="btn-save-reflections" class="btn btn-secondary btn-sm">💾 Save Reflections</button>
+            <button id="btn-export-pdf" class="btn btn-cyan btn-sm">📄 Export PDF</button>
+            <button id="btn-export-all-pdf" class="btn btn-outline btn-sm">📑 Export All Top 5</button>
+            <button id="btn-print-report" class="btn btn-outline btn-sm">🖨️ Print (A4)</button>
+          </div>
+        </div>
+
+        <!-- Printable Report Canvas -->
+        <div id="trade-report-print-canvas" class="trade-report-print-container">
+          <!-- Dynamically populated report content -->
+        </div>
+      </section>
+
+      <!-- ================= 13. DATA BACKUP VIEW ================= -->
+      <section id="view-backup" class="view-panel">
+        <div class="view-header">
+          <div>
+            <h1 class="view-header-title">Data Backup, Persistence & Restore</h1>
+            <p class="view-header-desc">Full simulation JSON exports, browser storage persistence, and disaster recovery.</p>
+          </div>
+        </div>
+
+        <div class="card" style="border-left: 4px solid var(--accent-gold); margin-bottom: 20px;">
+          <div style="font-weight: 700; color: var(--accent-gold); margin-bottom: 4px;">⚠️ LocalStorage Browser-Isolation Notice</div>
+          <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
+            All simulation data is securely persisted in your web browser's local storage. Note that <strong>localStorage data is browser-specific and does not automatically synchronize across different devices or incognito sessions</strong>. Use the JSON Backup export below to safely transfer the simulation to another laptop or projector terminal.
+          </p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+          <div class="card">
+            <div class="card-title">Export Simulation Backup</div>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">
+              Download a complete JSON file containing all teams, initial portfolios, companies, 6 configured events, logged trades, and judge scores.
+            </p>
+            <button id="btn-download-json-backup" class="btn btn-cyan">📥 Download Backup JSON</button>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Restore Simulation from JSON</div>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">
+              Restore your simulation state from a previously saved JSON backup file. Validates data integrity before overwriting.
+            </p>
+            <input type="file" id="input-restore-json" accept=".json" style="margin-bottom: 12px; display: block; font-size: 12px;">
+            <button id="btn-restore-json-action" class="btn btn-warning">Restore from File</button>
+          </div>
+
+          <div class="card">
+            <div class="card-title" style="color: var(--market-red);">Destructive Operations</div>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">
+              Completely wipe the current session and start a fresh blank tournament simulation.
+            </p>
+            <button id="btn-reset-simulation" class="btn btn-danger">⚠️ Wipe & Reset All Data</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Projector / Display Mode Fullscreen Overlay -->
+    <div id="projector-overlay">
+      <div class="projector-header">
+        <div>
+          <div class="projector-brand">TLOS — THE MARKET SIMULATION</div>
+          <div style="font-size: 13px; color: var(--text-muted); letter-spacing: 1px;">STAGE ARENA DISPLAY TERMINAL</div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+          <div class="projector-clock" id="projector-live-clock">00:00:00</div>
+          <button id="btn-exit-projector" class="btn btn-outline btn-sm">✕ Exit Display</button>
+        </div>
+      </div>
+
+      <div class="projector-grid">
+        <!-- Left: Active Event & Stage Timer -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <div class="projector-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+              <span class="badge badge-normal" id="proj-event-number-badge">CURRENT EVENT</span>
+              <span id="proj-event-bad-badge"></span>
+            </div>
+            <h2 id="proj-event-title" style="font-size: 20px; font-weight: 800; color: var(--text-main); margin-bottom: 8px;">-</h2>
+            <p id="proj-event-desc" style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px;">-</p>
+            <div id="proj-event-options-list"></div>
+          </div>
+
+          <div class="projector-card">
+            <div class="stat-label">Market Companies Live Ticker</div>
+            <div id="proj-market-ticker-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-top: 12px;"></div>
+          </div>
+        </div>
+
+        <!-- Right: Published Leaderboard or Stage Round -->
+        <div class="projector-card" style="display: flex; flex-direction: column;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+            <div class="card-title" style="margin-bottom: 0;">Market Standings</div>
+            <span class="badge badge-normal" id="proj-standings-mode">Live</span>
+          </div>
+          <div class="table-container" style="flex: 1;">
+            <table class="data-table" style="font-size: 14px;">
+              <thead>
+                <tr>
+                  <th class="text-center">Rank</th>
+                  <th>Team</th>
+                  <th class="text-right">Net Worth</th>
+                  <th class="text-right">Score</th>
+                </tr>
+              </thead>
+              <tbody id="proj-tbody-standings"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Engine Tests Runner Modal -->
+    <div id="modal-tests" class="modal-overlay">
+      <div class="modal-box" style="max-width: 800px;">
+        <div class="modal-header">
+          <div class="modal-title">🧪 Official Scoring Engine Verification Test Suite</div>
+          <button class="modal-close" onclick="app.closeModal('modal-tests')">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+            Executes all 14 mandatory mathematical scoring checks (Financial Return bounds, average rank ties, Decision Quality neutral states, diversification tiers, downside control clamp, top-5 judge restrictions, tie-breaks).
+          </p>
+          <div id="tests-results-container" style="display: flex; flex-direction: column; gap: 8px;">
+            <!-- Dynamically populated test logs -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-cyan btn-sm" onclick="app.runBrowserTests()">Re-run All Tests</button>
+          <button class="btn btn-secondary btn-sm" onclick="app.closeModal('modal-tests')">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add/Edit Team Modal -->
+    <div id="modal-team" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-header">
+          <div class="modal-title" id="modal-team-title">Add / Edit Team</div>
+          <button class="modal-close" onclick="app.closeModal('modal-team')">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="form-team">
+            <input type="hidden" id="input-team-id">
+            <div class="form-group">
+              <label class="form-label">Team Name</label>
+              <input type="text" id="input-team-name" class="form-control" required placeholder="e.g. Apex Traders">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Starting Cash ($)</label>
+                <input type="number" id="input-team-cash" class="form-control" required value="35000">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phase 1 Starting Stock Allocations (Quantities)</label>
+              <div id="team-modal-holdings-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px;">
+                <!-- Company inputs -->
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-team')">Cancel</button>
+          <button type="button" class="btn btn-cyan" id="btn-save-team">Save Team</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CSV Import Modal -->
+    <div id="modal-csv" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-header">
+          <div class="modal-title">Import Teams via CSV</div>
+          <button class="modal-close" onclick="app.closeModal('modal-csv')">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+            Expected format: <code>TeamName,StartingCash,TECH,ENER,PHAR,FIN,AERO,CONS</code>
+          </p>
+          <textarea id="csv-paste-area" class="form-control" style="min-height: 150px; font-family: var(--font-mono); font-size: 12px;" placeholder="Team Alpha,35000,100,50,0,80,0,120
+Team Beta,40000,50,50,50,50,50,50"></textarea>
+          <div style="margin-top: 10px;">
+            <input type="file" id="csv-file-input" accept=".csv" style="font-size: 12px;">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline btn-sm" id="btn-download-csv-template">Download CSV Template</button>
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-csv')">Cancel</button>
+          <button type="button" class="btn btn-cyan" id="btn-process-csv-import">Import Teams</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add/Edit Company Modal -->
+    <div id="modal-company" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-header">
+          <div class="modal-title" id="modal-company-title">Add / Edit Company</div>
+          <button class="modal-close" onclick="app.closeModal('modal-company')">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="form-company">
+            <input type="hidden" id="input-company-id">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Ticker Symbol</label>
+                <input type="text" id="input-company-ticker" class="form-control" required placeholder="e.g. TECH" uppercase>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Company Name</label>
+                <input type="text" id="input-company-name" class="form-control" required placeholder="e.g. Apex AI">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Sector</label>
+              <input type="text" id="input-company-sector" class="form-control" placeholder="e.g. Technology">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Starting Price ($)</label>
+                <input type="number" step="0.01" id="input-company-start-price" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Current Price ($)</label>
+                <input type="number" step="0.01" id="input-company-curr-price" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Frozen Final Price ($)</label>
+                <input type="number" step="0.01" id="input-company-frozen-price" class="form-control" required>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-company')">Cancel</button>
+          <button type="button" class="btn btn-cyan" id="btn-save-company">Save Company</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Event Modal -->
+    <div id="modal-event" class="modal-overlay">
+      <div class="modal-box" style="max-width: 750px;">
+        <div class="modal-header">
+          <div class="modal-title" id="modal-event-title">Configure Simulation Event</div>
+          <button class="modal-close" onclick="app.closeModal('modal-event')">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="form-event">
+            <input type="hidden" id="input-event-id">
+            <div class="form-row">
+              <div class="form-group" style="flex: 2;">
+                <label class="form-label">Event Name</label>
+                <input type="text" id="input-event-name" class="form-control" required>
+              </div>
+              <div class="form-group" style="flex: 1;">
+                <label class="form-label">Is Bad Event (1 of 3)</label>
+                <select id="input-event-is-bad" class="form-control">
+                  <option value="false">No (Standard Event)</option>
+                  <option value="true">Yes (Bad Event)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Description</label>
+              <textarea id="input-event-desc" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Affected Companies (Tickers)</label>
+              <div id="event-affected-tickers-checkboxes" style="display: flex; gap: 12px; flex-wrap: wrap;"></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Options Configuration</label>
+              <div id="event-options-editor-container" style="display: flex; flex-direction: column; gap: 12px;"></div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-event')">Cancel</button>
+          <button type="button" class="btn btn-cyan" id="btn-save-event">Save Event Configuration</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- General Confirm Modal -->
+    <div id="modal-confirm" class="modal-overlay">
+      <div class="modal-box" style="max-width: 480px;">
+        <div class="modal-header">
+          <div class="modal-title" id="confirm-modal-title">Confirm Action</div>
+          <button class="modal-close" onclick="app.closeModal('modal-confirm')">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p id="confirm-modal-message" style="font-size: 14px; color: var(--text-secondary); line-height: 1.5;"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-confirm')">Cancel</button>
+          <button type="button" class="btn btn-danger" id="btn-confirm-action-ok">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="scoring.js"></script>
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
